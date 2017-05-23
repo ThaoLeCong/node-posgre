@@ -63,4 +63,7 @@ $(document).ready(function(){
   $("#txtMessage").focusout(function(){
     socket.emit("client_send_stopType");
   });
+  $(window).on('beforeunload', function(){ 
+    $("#btnLogout").click();
+  });
 });
