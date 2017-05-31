@@ -39,20 +39,16 @@
 #secondNav{
 	height:40px;
 }
-.navbar-center {
-    position: absolute;
-    left: 60%;
-}
 .userli{
 	border-left:2px solid #d2dde0;
 }
 .userli:hover{
 	background-color:#68cce8;
-	color:black;
+	color:white;
 }
 .navhover:hover{
 	background-color:#68cce8;
-	color:black;
+	color:white;
 }
 #loginForm{
 	margin-top:10%;
@@ -62,22 +58,28 @@
 	margin:0px;
 }
 #listMessage{
+	position:fixed;
 	overflow-y: auto;
-	height:65%;
+	height:60%;
+	margin-top:2%;
 }
 #userMessage{
-	position:absolute;
-	height:10%;
+	position:fixed;
+	background-color:aqua;
+	bolder:1px solid black;
+	height:5%;
 	width:100%;
-	top:120%;
+	top:95%;
 }
 #userOnline{
 	overflow-y: auto;
 	max-height:100%;
 	background-color:#e1e5ed;
 }
-html{
-	max-height:100%;
+#chatForm{
+	height:700px;
+	margin-left:0px;
+	padding-left:0px;
 }
 #currentUser{
 	color:red;
