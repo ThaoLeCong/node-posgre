@@ -19,7 +19,7 @@ socket.on("_server_send_updateChatList",function(data){
   });
 });
 socket.on("server_send_updateMessage",function(data){
-  $("#listMessage").append("<span class='user_Message'><strong class='bold'>"+data.nguoigui+" : </strong>"+data.noidung+"</span></br>");
+  $("#listMessage").append("<span class='user_Message col-md-12 col-xs-12'><strong class='bold'>"+data.nguoigui+" : </strong>"+data.noidung+"</span></br>");
   $("#listMessage").scrollTop($("#listMessage").height());
 });
 socket.on("server_send_someoneType",function(data){
@@ -47,7 +47,7 @@ $(document).ready(function(){
   });
   $("#btnSendMessage").click(function(){
 	socket.emit("client_send_message",$("#txtMessage").val());
-	$("#listMessage").append("<span class='myMessage'><strong>"+userName+"</strong>"+$("#txtMessage").val()+"</span></br>");
+	$("#listMessage").append("<span class='myMessage col-md-12 col-xs-12'><strong>"+userName+"</strong>"+$("#txtMessage").val()+"</span></br>");
 	$("#txtMessage").val('');
   });
   $("#txtMessage").keyup(function(event){
