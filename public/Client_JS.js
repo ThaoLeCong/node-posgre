@@ -19,7 +19,7 @@ socket.on("_server_send_updateChatList",function(data){
   });
 });
 socket.on("server_send_updateMessage",function(data){
-  $("#listMessage").append("<span class='userMessage'><strong class='bold'>"+data.nguoigui+" : </strong>"+data.noidung+"</span></br>");
+  $("#listMessage").append("<span class='user_Message'><strong class='bold'>"+data.nguoigui+" : </strong>"+data.noidung+"</span></br>");
   $("#listMessage").scrollTop($("#listMessage").height());
 });
 socket.on("server_send_someoneType",function(data){
