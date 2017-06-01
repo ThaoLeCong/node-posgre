@@ -70,11 +70,13 @@
 	top:95%;
 }
 .user_Message{
-	border:1px solid black;
+	border:1px solid #d2ddef;
+	color:black;
 }
 .myMessage{
+	text-align:right;
 	color:red;
-	border:1px solid black;
+	border:1px solid #edb4c8;
 	background-color:aqua;
 }
 #userOnline{
