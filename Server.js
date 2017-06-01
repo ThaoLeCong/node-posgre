@@ -33,7 +33,7 @@ io.on("connection",function(socket){
     socket.broadcast.emit("_server_send_updateChatList",arrUser);
   });
   socket.on("client_send_message",function(data){
-	io.sockets.emit("server_send_updateMessage",{nguoigui:socket.UserName,noidung:data});  
+	socket.broadcast.emit("server_send_updateMessage",{nguoigui:socket.UserName,noidung:data});  
   });
   socket.on("client_send_userType",function(){
 	socket.broadcast.emit("server_send_someoneType",socket.UserName);

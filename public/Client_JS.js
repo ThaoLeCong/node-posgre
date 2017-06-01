@@ -1,4 +1,5 @@
 var socket=io("https://daihoianhhung.herokuapp.com/");
+var userName;
 socket.on("_server_send_loginSucess",function(data){
   $("#loginForm").hide();
   $("#menuLogout").show();
@@ -6,6 +7,7 @@ socket.on("_server_send_loginSucess",function(data){
   $("#chatForm").show();
   $("#currentUser").html("");
   $("#currentUser").append("Xin chào "+data);
+  userName=data;
 });
 socket.on("_server_send_loginFail",function(){
   alert("UserName da ton tai, vui long chon UserName khac");
@@ -18,7 +20,6 @@ socket.on("_server_send_updateChatList",function(data){
 });
 socket.on("server_send_updateMessage",function(data){
   $("#listMessage").append("<span class='userMessage'><strong class='bold'>"+data.nguoigui+" : </strong>"+data.noidung+"</span></br>");
-  $("#txtMessage").val('');
   $("#listMessage").scrollTop($("#listMessage").height());
 });
 socket.on("server_send_someoneType",function(data){
@@ -46,6 +47,8 @@ $(document).ready(function(){
   });
   $("#btnSendMessage").click(function(){
 	socket.emit("client_send_message",$("#txtMessage").val());
+	$("#listMessage").append("<span class='userMessage'><strong class='myMessage'>"+userName+"</strong>"+$("#txtMessage").val()+"</span></br>");
+	$("#txtMessage").val('');
   });
   $("#txtMessage").keyup(function(event){
     if(event.keyCode == 13){

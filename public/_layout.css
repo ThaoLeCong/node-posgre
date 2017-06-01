@@ -71,6 +71,9 @@
 	width:100%;
 	top:95%;
 }
+#myMessage{
+	text-align:right;
+}
 #userOnline{
 	overflow-y: auto;
 	max-height:100%;
