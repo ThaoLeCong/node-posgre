@@ -47,7 +47,7 @@ $(document).ready(function(){
   });
   $("#btnSendMessage").click(function(){
 	socket.emit("client_send_message",$("#txtMessage").val());
-	$("#listMessage").append("<span class='userMessage'><strong class='myMessage'>"+userName+"</strong>"+$("#txtMessage").val()+"</span></br>");
+	$("#listMessage").append("<span class='myMessage'><strong>"+userName+"</strong>"+$("#txtMessage").val()+"</span></br>");
 	$("#txtMessage").val('');
   });
   $("#txtMessage").keyup(function(event){
