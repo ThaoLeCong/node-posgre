@@ -78,14 +78,19 @@
 	color:black;
 	padding:5px 2px;
 	background-color:#e0e1e2;
+	margin-top:20px;
+	margin-bottom:20px;
 }
 .myMessage{
-	text-align:right;
+	position:relative;
+	right:5%;
 	color:red;
 	border:1px solid #edb4c8;
 	background-color:#b5f1f2;
 	padding:5px 2px;
 	border-radius:5px;
+	margin-top:20px;
+	margin-bottom:20px;
 }
 #userOnline{
 	overflow-y: auto;
