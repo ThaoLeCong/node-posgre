@@ -26,10 +26,10 @@ socket.on("server_send_someoneType",function(data){
   $("#notify_someoneType").html('');
   $("#notify_someoneType").append("<span>"+data+" is typing now ...</span>");
 });
-/* socket.on("server_send_stopType",function(){
+socket.on("server_send_stopType",function(){
   $("#notify_someoneType").html('');
   $("#notify_someoneType").append("<span></span>");
-}); */
+});
 $(document).ready(function(){
   $("#loginForm").show();
   $("#chatForm").hide();
