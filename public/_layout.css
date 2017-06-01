@@ -33,6 +33,9 @@
 /* .dropdown:hover .dropbtn { */
     /* background-color: #3e8e41; */
 /* } */
+.menu{
+	position:fixed;
+}
 #firstNav,#secondNav{
 	margin:0px;
 }
@@ -72,12 +75,14 @@
 .user_Message{
 	border:1px solid #d2ddef;
 	color:black;
+	margin:5% 1%;
 }
 .myMessage{
 	text-align:right;
 	color:red;
 	border:1px solid #edb4c8;
 	background-color:aqua;
+	margin:5% 1%;
 }
 #userOnline{
 	overflow-y: auto;
@@ -98,4 +103,7 @@
 #left{
 	background-color:#e1e5ed;
 	height:100%;
+}
+#notify_someoneType{
+	
 }
