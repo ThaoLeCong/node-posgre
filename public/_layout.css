@@ -75,14 +75,16 @@
 .user_Message{
 	border:1px solid #d2ddef;
 	color:black;
-	margin:0.5%;
+	margin-top:0.5%;
+	margin-left:0.5%;
 }
 .myMessage{
 	text-align:right;
 	color:red;
 	border:1px solid #edb4c8;
 	background-color:aqua;
-	margin:0.5%;
+	margin-top:0.5%;
+	margin-right:-0.5%;
 }
 #userOnline{
 	overflow-y: auto;
