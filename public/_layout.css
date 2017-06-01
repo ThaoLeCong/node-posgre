@@ -74,6 +74,7 @@
 }
 .user_Message{
 	border:1px solid #d2ddef;
+	border-radius:2px;
 	color:black;
 	margin:5px 2px;
 	padding:10px 5px;
@@ -86,6 +87,7 @@
 	background-color:#b5f1f2;
 	margin:5px 2px;
 	padding:10px 5px;
+	border-radius:2px;
 }
 #userOnline{
 	overflow-y: auto;
