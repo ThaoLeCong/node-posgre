@@ -42,6 +42,12 @@
 #secondNav{
 	height:40px;
 }
+.fillheight {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto; /* These two are added only for clarity, */
+    height: auto; /* as the default is auto anyway */
+}
 .userli{
 	border-left:2px solid #d2dde0;
 }
@@ -83,7 +89,7 @@
 }
 .myMessage{
 	position:relative;
-	right:5%;
+	left:50%;
 	color:red;
 	border:1px solid #edb4c8;
 	background-color:#b5f1f2;

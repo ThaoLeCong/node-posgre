@@ -1,17 +1,17 @@
-var socket=io("https://daihoianhhung.herokuapp.com/");
+var socket=io("http://localhost:3000/");
 var userName;
-socket.on("_server_send_loginSucess",function(data){
-  $("#loginForm").hide();
-  $("#menuLogout").show();
-  $("#menuRegister").hide();
-  $("#chatForm").show();
-  $("#currentUser").html("");
-  $("#currentUser").append("Xin chào "+data);
-  userName=data;
-});
-socket.on("_server_send_loginFail",function(){
-  alert("UserName da ton tai, vui long chon UserName khac");
-});
+// socket.on("_server_send_loginSucess",function(data){
+//   $("#loginForm").hide();
+//   $("#menuLogout").show();
+//   $("#menuRegister").hide();
+//   $("#chatForm").show();
+//   $("#currentUser").html("");
+//   $("#currentUser").append("Xin chào "+data);
+//   userName=data;
+// });
+// socket.on("_server_send_loginFail",function(){
+//   alert("UserName da ton tai, vui long chon UserName khac");
+// });
 socket.on("_server_send_updateChatList",function(data){
   $("#userOnline").html("");
   data.forEach(function(value){
@@ -31,13 +31,20 @@ socket.on("server_send_stopType",function(){
   $("#notify_someoneType").append("<span></span>");
 });
 $(document).ready(function(){
-  $("#loginForm").show();
-  $("#chatForm").hide();
-  $("#menuLogout").hide();
-  $("#menuRegister").show();
-  $("#btnRegister").click(function(){
-    socket.emit("_client_send_userName",$("#txtUserName").val());
+  // $("#loginForm").show();
+  $("#chatForm").show();
+  $("#menuLogout").show();
+  $("#menuRegister").hide();
+  $("sayHi").html("");
+  $("#sayHi").append("<button id='btnLogout' class='btn-default'>Logout</button>");
+  $('#slider').nivoSlider({
+    pauseTime:2000
   });
+  // $( "#form_login" ).submit(function( event ) {
+  //   var username=$("#txtUserName").val();
+  //   var password=$("#txtPassword").val();
+  //   socket.emit("_client_send_userName",username);
+  // });
   $("#btnLogout").click(function(){
     socket.emit("client_send_userLogout");
     $("#loginForm").show();

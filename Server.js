@@ -6,9 +6,98 @@ app.set("views","./views");
 
 var server=require("http").Server(app);
 var io=require("socket.io")(server);
+
+///////////////////////////////////////
+var session=require("express-session");
+app.use(session({
+    secret: "thao1102",
+    resave: true,
+    saveUninitialized: true }));
+//////////////////////////////////////
+
+//////////////////////////////////////
+var bodyParser = require('body-parser');
+app.use(bodyParser.json()); 
+app.use(bodyParser.urlencoded({ extended: true }));
+//////////////////////////////////////
+
+//////////////////////////////////////
+const Passport=require("passport");
+const LocalStrategy = require('passport-local').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+app.use(Passport.initialize());
+app.use(Passport.session());
+/////////////////////////////////////
+
+/////////////////////////////////////
+var flash=require("connect-flash");
+app.use(flash());
+/////////////////////////////////////
+
+
+// cấu hình kết nối db vs sequelize
+/////////////////////////////////////
+const sequelize=require("sequelize");
+const db = new sequelize( {
+  database:'DaihoianhhungDB',
+  username:'postgres',
+  password:'thao1102',
+  host: 'localhost',
+  port:5432,
+  dialect:'postgres',
+  dialectOptions:{ssl:false},
+  pool: {
+    max: 5,
+    min: 0,
+    idle: 10000
+  },
+  define:{
+    freezeTableName: true
+  }
+});
+// test kết nối
+db.authenticate()
+.then(() => {
+  console.log('Connection has been established successfully.');
+})
+.catch(err => {
+  console.error('Unable to connect to the database:', err);
+});
+// create table
+const User = db.define('account', {
+    username: {
+      type: sequelize.STRING
+    },
+    password: {
+      type: sequelize.STRING
+    },
+    email:{
+      type: sequelize.STRING
+    }
+});
+/////////////////////////////////////
+
+
+////////////////////////////////////
+// crawl data
+var request = require('request');  
+var cheerio = require('cheerio');
+var url = 'http://vnexpress.net/tin-tuc/khoa-hoc/tri-nho-con-nguoi-giam-vi-dien-thoai-thong-minh-3243543.html';
+
+request(url, function(err, response, body){  
+  if (!err && response.statusCode == 200) {
+    console.log(body);
+  }
+  else console.log('Error');
+});
+////////////////////////////////////
+
 var arrUser=[];
 var arrPhong=[];
-server.listen(process.env.PORT||3000);
+var isLogin=false;
+server.listen(process.env.PORT||3000,function(){
+  console.log("server was started at port 3000");
+});
 
 io.on("connection",function(socket){
   console.log("co nguoi ket noi");
@@ -22,9 +111,12 @@ io.on("connection",function(socket){
     else {
       arrUser.push(data);
       socket.UserName=data;
-      socket.emit("_server_send_loginSucess",socket.UserName);
-      console.log(socket.UserName+" da dang ky thanh cong");
-      io.sockets.emit("_server_send_updateChatList",arrUser);
+      if(isLogin)
+      {
+        socket.emit("_server_send_loginSucess",socket.UserName);
+        console.log(socket.UserName+" da dang nhap thanh cong");
+        io.sockets.emit("_server_send_updateChatList",arrUser);
+      }
     }
   });
   socket.on("client_send_userLogout",function(){
@@ -50,7 +142,7 @@ io.on("connection",function(socket){
 	io.sockets.in(socket.phong).emit("_server_send_update_group_ChatList",arrUser);
   });
   socket.on("client_send_message_to_group",function(data){
-	io.sockets.in(socket.phong).emit("server_send_updateGroupMessage",{nguoigui:"t�o",noidung:data});
+	io.sockets.in(socket.phong).emit("server_send_updateGroupMessage",{nguoigui:"tèo",noidung:data});
   });
   socket.on("client_send_user_in_group_Type",function(){
 	socket.broadcast.emit("server_send_someone_in_group_Type",socket.UserName);
@@ -59,7 +151,103 @@ io.on("connection",function(socket){
 	socket.broadcast.emit("client_send_group_stopType");
   });
 });
+
 app.get("/",function(req,res){
-  res.render("trangchu");
+  if(req.isAuthenticated())
+  {
+    var id=req.params.id;
+    res.render('trangchu');
+  }
+  else
+  {
+    res.redirect('/login');
+  }
 });
+app.get("/tintuc/:id",function(req,res){
+  if(req.isAuthenticated())
+  {
+    var id=req.params.id;
+    res.send("tin tức");
+  }
+  else
+  {
+    res.redirect('/login');
+  }
+});
+app.post("/login",Passport.authenticate('local', { successRedirect: '/',
+                                   failureRedirect: '/abc',
+                                   failureFlash: true })
+);
+app.get("/login",function(req,res){
+  res.render("login");
+});
+app.post("/signup", bodyParser.urlencoded({ extended: true }), function (req, res) {
+  if (!req.body) return res.sendStatus(400);
+  var username=req.body.username;
+  var password=req.body.passwd;
+  var email=req.body.email;
+  console.log(username);
+  User.findOne({where:{$or: [{username: username}, {email: email}]}}).then(user=>{
+      if(!user)
+      {
+        User.findOrCreate({where:{username:username,password:password,email:email}}).spread((user, created) => {
+        console.log(user.get({
+          plain: true
+        }))});
+        
+        res.render("trangchu");
+      }
+      else
+        res.send("username đã tồn tại");
+    });
+});
+
+Passport.use(new LocalStrategy(
+  function(username, password, done) {
+    console.log("đang check");
+    User.findOne({where:{username:username}}).then(user=>{
+      if (!user) {
+        return done(null, false, { message: 'Incorrect username.' });
+      }
+      if (user.get('password')!=password) {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      console.log("Đăng nhập thành công");
+      return done(null, user);
+    }); 
+  }
+));
+Passport.serializeUser(function (user, done) {
+  done(null, user.username);
+});
+Passport.deserializeUser(function (username, done) {
+  User.findOne({where:{username:username}}).then(user=>{
+    if (!user) {
+      console.log("bạn chưa đăng nhập");
+      return done(null, false, { message: 'Incorrect username.' });
+    }
+    return done(null, user);
+    }); 
+});
+Passport.use(new FacebookStrategy({
+    clientID: 734280883409750,
+    clientSecret: '76ebf7f12ec59486f0a215c29662ce6a',
+    callbackURL: "http://localhost:3000/auth/facebook",
+    profileFields:["gender","locale"]
+  },
+  function(accessToken, refreshToken, profile, done) {
+    console.log(profile);
+    User.findOrCreate({where:{username:profile.displayName,password:profile.id}}).spread((user, created) => {
+      console.log(user.get({
+          plain: true
+      }));
+      console.log(created);
+      done(null, user);
+      isLogin=true;
+    });
+  }
+));
+app.get('/auth/facebook',
+Passport.authenticate('facebook', { successRedirect: '/tintuc/1',
+                                      failureRedirect: '/' }));
 
