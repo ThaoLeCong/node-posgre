@@ -1,6 +1,5 @@
 var socket=io("http://localhost:3000/");
-var userName;
-// socket.on("_server_send_loginSucess",function(data){
+socket.on("_server_send_loginSucess",function(data){
 //   $("#loginForm").hide();
 //   $("#menuLogout").show();
 //   $("#menuRegister").hide();
@@ -11,7 +10,7 @@ var userName;
 // });
 // socket.on("_server_send_loginFail",function(){
 //   alert("UserName da ton tai, vui long chon UserName khac");
-// });
+});
 socket.on("_server_send_updateChatList",function(data){
   $("#userOnline").html("");
   data.forEach(function(value){
@@ -19,6 +18,7 @@ socket.on("_server_send_updateChatList",function(data){
   });
 });
 socket.on("server_send_updateMessage",function(data){
+  alert("đang nhận");
   $("#listMessage").append("<strong class='bold'>"+data.nguoigui+" : </strong><span class='user_Message'>"+data.noidung+"</span></br>");
   $("#listMessage").scrollTop($("#listMessage").height());
 });
@@ -38,19 +38,13 @@ $(document).ready(function(){
   $('#slider').nivoSlider({
     pauseTime:2000
   });
-  // $( "#form_login" ).submit(function( event ) {
-  //   var username=$("#txtUserName").val();
-  //   var password=$("#txtPassword").val();
-  //   socket.emit("_client_send_userName",username);
-  // });
-  $("#btnLogout").click(function(){
+  var userName=$("#currentUser").text();
+  socket.emit("_client_send_userName",userName);
+  $("#logout").on("click",function(){
     socket.emit("client_send_userLogout");
-    $("#loginForm").show();
-    $("#chatForm").hide();
-    $("#menuLogout").hide();
-    $("#menuRegister").show();
   });
   $("#btnSendMessage").click(function(){
+    alert("send message");
 	socket.emit("client_send_message",$("#txtMessage").val());
 	$("#listMessage").append("<span class='myMessage'>"+$("#txtMessage").val()+"</span><strong> : "+userName+"</strong></br>");
 	$("#txtMessage").val('');

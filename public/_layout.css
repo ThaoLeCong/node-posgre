@@ -66,38 +66,14 @@
 	width:100%;
 	margin:0px;
 }
-#listMessage{
-	position:fixed;
-	overflow-x: auto;
-	height:60%;
-	margin-top:2.5%;
-}
+
 #userMessage{
 	position:fixed;
 	height:5%;
 	width:100%;
 	top:95%;
 }
-.user_Message{
-	border:1px solid #d2ddef;
-	border-radius:5px;
-	color:black;
-	padding:5px 2px;
-	background-color:#e0e1e2;
-	margin-top:20px;
-	margin-bottom:20px;
-}
-.myMessage{
-	position:relative;
-	left:50%;
-	color:red;
-	border:1px solid #edb4c8;
-	background-color:#b5f1f2;
-	padding:5px 2px;
-	border-radius:5px;
-	margin-top:20px;
-	margin-bottom:20px;
-}
+
 #userOnline{
 	overflow-y: auto;
 	max-height:100%;

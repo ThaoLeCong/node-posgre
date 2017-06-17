@@ -80,21 +80,20 @@ const User = db.define('account', {
 
 ////////////////////////////////////
 // crawl data
-var request = require('request');  
-var cheerio = require('cheerio');
-var url = 'http://vnexpress.net/tin-tuc/khoa-hoc/tri-nho-con-nguoi-giam-vi-dien-thoai-thong-minh-3243543.html';
+// var request = require('request');  
+// var cheerio = require('cheerio');
+// var url = 'http://vnexpress.net/tin-tuc/khoa-hoc/tri-nho-con-nguoi-giam-vi-dien-thoai-thong-minh-3243543.html';
 
-request(url, function(err, response, body){  
-  if (!err && response.statusCode == 200) {
-    console.log(body);
-  }
-  else console.log('Error');
-});
+// request(url, function(err, response, body){  
+//   if (!err && response.statusCode == 200) {
+//     console.log(body);
+//   }
+//   else console.log('Error');
+// });
 ////////////////////////////////////
 
 var arrUser=[];
 var arrPhong=[];
-var isLogin=false;
 server.listen(process.env.PORT||3000,function(){
   console.log("server was started at port 3000");
 });
@@ -106,17 +105,14 @@ io.on("connection",function(socket){
   });
   socket.on("_client_send_userName",function(data){
     if(arrUser.indexOf(data)>=0){
-      socket.emit("_server_send_loginFail");
+      io.sockets.emit("_server_send_updateChatList",arrUser);
     }
     else {
       arrUser.push(data);
       socket.UserName=data;
-      if(isLogin)
-      {
-        socket.emit("_server_send_loginSucess",socket.UserName);
-        console.log(socket.UserName+" da dang nhap thanh cong");
-        io.sockets.emit("_server_send_updateChatList",arrUser);
-      }
+      socket.emit("_server_send_loginSucess",socket.UserName);
+      console.log(socket.UserName+" da dang ky thanh cong");
+      io.sockets.emit("_server_send_updateChatList",arrUser);
     }
   });
   socket.on("client_send_userLogout",function(){
@@ -125,7 +121,8 @@ io.on("connection",function(socket){
     socket.broadcast.emit("_server_send_updateChatList",arrUser);
   });
   socket.on("client_send_message",function(data){
-	socket.broadcast.emit("server_send_updateMessage",{nguoigui:socket.UserName,noidung:data});  
+    console.log(data);
+	  io.sockets.emit("server_send_updateMessage",{nguoigui:socket.UserName,noidung:data});  
   });
   socket.on("client_send_userType",function(){
 	socket.broadcast.emit("server_send_someoneType",socket.UserName);
@@ -246,7 +243,6 @@ Passport.use(new FacebookStrategy({
       }));
       console.log(created);
       done(null, user);
-      isLogin=true;
     });
   }
 ));
