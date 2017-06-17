@@ -155,8 +155,7 @@ io.on("connection",function(socket){
 app.get("/",function(req,res){
   if(req.isAuthenticated())
   {
-    var id=req.params.id;
-    res.render('trangchu');
+    res.render('trangchu',{username:req.session.passport.user});
   }
   else
   {
@@ -181,6 +180,10 @@ app.post("/login",Passport.authenticate('local', { successRedirect: '/',
 app.get("/login",function(req,res){
   res.render("login");
 });
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/login');
+});
 app.post("/signup", bodyParser.urlencoded({ extended: true }), function (req, res) {
   if (!req.body) return res.sendStatus(400);
   var username=req.body.username;
@@ -195,7 +198,7 @@ app.post("/signup", bodyParser.urlencoded({ extended: true }), function (req, re
           plain: true
         }))});
         
-        res.render("trangchu");
+        res.render("trangchu",{username:username});
       }
       else
         res.send("username đã tồn tại");
@@ -248,6 +251,6 @@ Passport.use(new FacebookStrategy({
   }
 ));
 app.get('/auth/facebook',
-Passport.authenticate('facebook', { successRedirect: '/tintuc/1',
-                                      failureRedirect: '/' }));
+Passport.authenticate('facebook', { successRedirect: '/',
+                                      failureRedirect: '/login' }));
 

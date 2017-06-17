@@ -35,8 +35,6 @@ $(document).ready(function(){
   $("#chatForm").show();
   $("#menuLogout").show();
   $("#menuRegister").hide();
-  $("sayHi").html("");
-  $("#sayHi").append("<button id='btnLogout' class='btn-default'>Logout</button>");
   $('#slider').nivoSlider({
     pauseTime:2000
   });

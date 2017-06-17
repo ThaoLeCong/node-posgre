@@ -19,7 +19,77 @@
 	</head>
 	<body>
 		<div class="jumbotron">
-			<% include _layout_share%>
+			<div class="row">
+				<div class="col-md-12 col-xs-12">
+					<nav id="firstNav" class="navbar navbar-inverse">
+						<div class="container-fluid col-md-offset-0">
+							<div class="navbar-header">
+								<a class="navbar-brand" href="#">Đại hội anh hùng</a>
+							</div>
+							<ul id="menuRegister" class="nav navbar-nav navbar-right">
+								<li>
+									<a href="#">Đăng ký</a>
+								</li>
+								<li>
+									<a href="/login">Đăng nhập</a>
+								</li>
+							</ul>
+							<ul id="menuLogout" class="nav navbar-nav navbar-right">
+								<div id="sayHi">
+									<span id="currentUser">Xin chào <%=username%></span>
+									
+								</div>
+							</ul>
+							<ul class="navbar-form navbar-center">
+								<form >
+									<div class="form-group">
+										<input type="text" class="form-control" placeholder="Nhập từ khóa tìm kiếm">
+									</div>
+									<button type="submit" class="btn btn-default">Search</button>
+								</form>
+							</ul>
+						</div>
+					</nav>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 col-xs-12">
+					<nav id="secondNav" class="navbar navbar-default">
+						<div class="container-fluid col-md-offset-2">
+							<div class="navbar-header navhover">
+								<a class="navbar-brand" href="#">Home</a>
+							</div>
+							<ul class="nav navbar-nav">
+								<li class="dropdown userli">
+									<a href="#" class="dropbtn">Phòng chat</a>
+									<div class="dropdown-content">
+										<a href="http://localhost:3000/chatpublic/">Chat cộng đồng</a>
+										<a href="http://localhost:3000/groupchat/">Chat nhóm</a>
+										<a href="http://localhost:3000/privatechat">Chat riêng tu</a>
+									</div>
+								</li>
+								<li class="dropdown userli">
+									<a class="dropbtn" href="#">Top 5</a>
+									<div class="dropdown-content">
+										<a href="#">Link 1</a>
+										<a href="#">Link 2</a>
+										<a href="#">Link 3</a>
+									</div>
+								</li>
+								<li class="userli">
+									<a href="#">Điều khoản</a>
+								</li>
+								<li class="userli">
+									<a href="#">Liên hệ</a>
+								</li>
+								<li class="userli">
+									<a href="#">Trợ giúp</a>
+								</li>
+							</ul>
+						</div>
+					</nav>
+				</div>
+			</div>
 		</div>
 		<div class="container">
 			<% include _slider_share%>
