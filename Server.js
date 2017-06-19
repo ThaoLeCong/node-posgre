@@ -122,10 +122,10 @@ io.on("connection",function(socket){
   });
   socket.on("client_send_message",function(data){
     console.log(data);
-	  io.sockets.emit("server_send_updateMessage",{nguoigui:socket.UserName,noidung:data});  
+	  socket.broadcast.emit("server_send_updateMessage",{nguoigui:socket.UserName,noidung:data});  
   });
   socket.on("client_send_userType",function(){
-	socket.broadcast.emit("server_send_someoneType",socket.UserName);
+    socket.broadcast.emit("server_send_someoneType",socket.UserName);
   });
   socket.on("client_send_stopType",function(){
 	socket.broadcast.emit("server_send_stopType");
@@ -249,4 +249,15 @@ Passport.use(new FacebookStrategy({
 app.get('/auth/facebook',
 Passport.authenticate('facebook', { successRedirect: '/',
                                       failureRedirect: '/login' }));
+app.get('/profile',(req,res)=>{
+  if(req.isAuthenticated())
+  {
+    var id=req.params.id;
+    res.send("profile");
+  }
+  else
+  {
+    res.redirect('/login');
+  }
+});
 
