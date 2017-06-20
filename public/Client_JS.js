@@ -1,4 +1,5 @@
 var socket=io("http://localhost:3000/");
+var tabChat=0;
 socket.on("_server_send_loginSucess",function(data){
 //   $("#loginForm").hide();
 //   $("#menuLogout").show();
@@ -13,9 +14,9 @@ socket.on("_server_send_loginSucess",function(data){
 });
 socket.on("_server_send_updateChatList",function(data){
   $("#userOnline").html("");
-  data.forEach(function(value){
-  $("#userOnline").append("<li class='list-group-item'><a href=#>"+value+"</a></li>");
-  });
+  for (var i=0; i<data.arrUser.length; i++){
+    $("#userOnline").append("<li class='list-group-item' data-id='"+data.arrSocketID[i]+"'><a href='#'>"+data.arrUser[i]+"</a></li>");
+  };
 });
 socket.on("server_send_updateMessage",function(data){
   $("#body-chat").append(
@@ -34,19 +35,130 @@ socket.on("server_send_updateMessage",function(data){
   $('#body-chat').animate({
       scrollTop: $('#body-chat').get(0).scrollHeight}, 1000);
 });
+
+socket.on("server_send_your_private_message",function(data){
+  if(tabChat===0)
+  {
+    tabChat=tabChat+1;
+    $("#chat_window_1").show();
+    $("#chatWith").html('');
+       $("#chatWith").append("<h3  class='panel-title chat1' data-id='"+data.id+"'><span class='glyphicon glyphicon-comment'></span> "+data.UserName+" </h3>");
+    $("#body-chat").append(
+      "<div class='row msg_container base_receive'>"+
+        "<div class='col-md-2 col-xs-2 avatar'>"+
+            "<img src='http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg' class='img-responsive'>"+
+        "</div>"+
+        "<div class='col-xs-10 col-md-10'>"+
+            "<div class='messages msg_receive'>"+
+                "<p>"+data.message+"</p>"+
+                "<time datetime='2009-11-13T20:00'>Timothy • 51 min</time>"+
+            "</div>"+
+        "</div>"+
+    "</div>"
+    );
+    $('#body-chat').animate({
+        scrollTop: $('#body-chat').get(0).scrollHeight}, 1000);
+  }
+  else if(data.id==$("h3.chat1").attr("data-id"))
+  {
+    $("#chat_window_1").show();
+    $("#body-chat").append(
+      "<div class='row msg_container base_receive'>"+
+        "<div class='col-md-2 col-xs-2 avatar'>"+
+            "<img src='http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg' class='img-responsive'>"+
+        "</div>"+
+        "<div class='col-xs-10 col-md-10'>"+
+            "<div class='messages msg_receive'>"+
+                "<p>"+data.message+"</p>"+
+                "<time datetime='2009-11-13T20:00'>Timothy • 51 min</time>"+
+            "</div>"+
+        "</div>"+
+    "</div>"
+    );
+    $('#body-chat').animate({
+        scrollTop: $('#body-chat').get(0).scrollHeight}, 1000);
+  }
+  else // mo tab chat moi
+  {
+    $("#chat_window_2").show();
+    $("#chatWith2").html('');
+       $("#chatWith2").append("<h3  class='panel-title chat2' data-id='"+data.id+"'><span class='glyphicon glyphicon-comment'></span> "+data.UserName+" </h3>");
+    $("#body-chat2").append(
+      "<div class='row msg_container base_receive'>"+
+        "<div class='col-md-2 col-xs-2 avatar'>"+
+            "<img src='http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg' class='img-responsive'>"+
+        "</div>"+
+        "<div class='col-xs-10 col-md-10'>"+
+            "<div class='messages msg_receive'>"+
+                "<p>"+data.message+"</p>"+
+                "<time datetime='2009-11-13T20:00'>Timothy • 51 min</time>"+
+            "</div>"+
+        "</div>"+
+    "</div>"
+    );
+    $('#body-chat2').animate({
+        scrollTop: $('#body-chat2').get(0).scrollHeight}, 1000);
+  }
+});
+
 socket.on("server_send_someoneType",function(data){
-  $("#notify_someoneType").html('');
-  $("#notify_someoneType").append("<span>"+data+" is typing now ...</span>");
+  if(data.id==$("h3.chat1").attr("data-id"))
+  {
+    $("#notify_someoneType").html('');
+    $("#notify_someoneType").append("<span>"+data.UserName+" is typing now ...</span>");
+  }
+  else if(data.id==$("h3.chat2").attr("data-id"))
+  {
+    $("#notify_someoneType2").html('');
+    $("#notify_someoneType2").append("<span>"+data.UserName+" is typing now ...</span>");
+  }
+  
 });
-socket.on("server_send_stopType",function(){
-  $("#notify_someoneType").html('');
-  $("#notify_someoneType").append("<span></span>");
+socket.on("server_send_stopType",function(data){
+  if(data==$("h3.chat1").attr("data-id"))
+  {
+    $("#notify_someoneType").html('');
+    $("#notify_someoneType").append("<span></span>");
+  }
+  else if(data==$("h3.chat2").attr("data-id"))
+  {
+    $("#notify_someoneType2").html('');
+    $("#notify_someoneType2").append("<span></span>");
+  }
+  
 });
+
 $(document).ready(function(){
   $("#menuLogout").show();
-  /*$("#chat_window_1").hide();*/
+  $("#chat_window_1").hide();
+  $("#chat_window_2").hide();
   $('#slider').nivoSlider({
     pauseTime:2000
+  });
+  $('#userOnline').on('click', 'li', function() {
+    // kiểm tra xem tab chat vs ng này đã mở hay chưa
+    if(tabChat===0)
+    {
+      $("#chat_window_1").show();
+      $("#chatWith").html('');
+      $("#chatWith").append("<h3  class='panel-title chat1' data-id='"+$(this).attr("data-id")+"'><span class='glyphicon glyphicon-comment'></span> "+$(this).text()+" </h3>");
+      tabChat=tabChat+1;
+    }
+    else
+    {
+      // neu id cua li giong data-id cua chatbox thi khong lam gi neu khac mo tab chat moi
+      if($("h3.chat1").attr("data-id")===$(this).attr("data-id"))
+      {
+
+      }
+      else
+      {
+        $("#chat_window_2").show();
+        $("#chatWith2").html('');
+        $("#chatWith2").append("<h3  class='panel-title chat2' data-id='"+$(this).attr("data-id")+"'><span class='glyphicon glyphicon-comment'></span> "+$(this).text()+" </h3>");
+        tabChat=tabChat+1;
+      }
+    }
   });
 
   ///////////////////////////////////////////////////////////////////////////
@@ -73,11 +185,19 @@ $(document).ready(function(){
   ///////////////////////////////////////////////////////////////////////////
   var userName=$("#currentUser").text();
   socket.emit("_client_send_userName",userName);
-  $("#logout").on("click",function(){
+  $("#btnLogout").on("click",function(){
     socket.emit("client_send_userLogout");
   });
   $("#btnSendMessage").click(function(){
-  	socket.emit("client_send_message",$("#txtMessage").val());
+    if($("h3.chat1").attr("data-id")==undefined)
+    {
+      socket.emit("client_send_message",$("#txtMessage").val());
+    }
+    else
+    {
+      socket.emit("client_send_private_message",{id:$("h3.chat1").attr("data-id"),message:$("#txtMessage").val()});
+    }
+  	
   	$("#body-chat").append(
       "<div class='row msg_container base_sent'>" +
           "<div class='col-md-10 col-xs-10'>" +
@@ -106,14 +226,63 @@ $(document).ready(function(){
     }
   });
   $("#txtMessage").focusin(function(){
-    socket.emit("client_send_userType");
+    socket.emit("client_send_userType",$("h3.chat1").attr("data-id"));
   });
   $("#txtMessage").focusout(function(){
-    socket.emit("client_send_stopType");
+    socket.emit("client_send_stopType",$("h3.chat1").attr("data-id"));
   });
+
+  /////////////////////////////////////////////
+  //tabchat2 notify someone type
+  $("#txtMessage2").focusin(function(){
+    socket.emit("client_send_userType",$("h3.chat2").attr("data-id"));
+  });
+  $("#txtMessage2").focusout(function(){
+    socket.emit("client_send_stopType",$("h3.chat2").attr("data-id"));
+  });
+  /////////////////////////////////////////////
+
   $(window).on('beforeunload', function(){ 
     $("#btnLogout").click();
   });
+
+
+  //////////////////////////////////////////
+  // tabChat2 event
+$("#btnSendMessage2").click(function(){
+    if($("h3.chat2").attr("data-id")==undefined)
+    {
+      socket.emit("client_send_message",$("#txtMessage2").val());
+    }
+    else
+    {
+      socket.emit("client_send_private_message",{id:$("h3.chat2").attr("data-id"),message:$("#txtMessage2").val()});
+    }
+    
+    $("#body-chat2").append(
+      "<div class='row msg_container base_sent'>" +
+          "<div class='col-md-10 col-xs-10'>" +
+              "<div class='messages msg_sent'>" +
+                  "<p>"+$("#txtMessage2").val()+"</p>" +
+                  "<time datetime='2009-11-13T20:00'>Timothy • 51 min</time>" +
+              "</div>"+
+          "</div>"+
+          "<div class='col-md-2 col-xs-2 avatar'>" +
+              "<img src='http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg' class='img-responsive'>"+
+          "</div>"+
+      "</div>"
+    );
+    $("#txtMessage2").val('');
+    $('#body-chat2').animate({
+      scrollTop: $('#body-chat2').get(0).scrollHeight}, 1000);
+  });
+  $("#txtMessage2").keyup(function(event){
+    if(event.keyCode == 13){
+        $("#btnSendMessage2").click();
+    }
+  });
+  //////////////////////////////////////////////
+
 
   // event icon chat box clic
   //////////////////////////////////////////////////////////////////////////////////////
@@ -147,6 +316,10 @@ $(document).on('click', '#new_chat', function (e) {
 $(document).on('click', '.icon_close', function (e) {
     //$(this).parent().parent().parent().parent().remove();
     $( "#chat_window_1" ).remove();
+});
+$(document).on('click', '.close2', function (e) {
+    //$(this).parent().parent().parent().parent().remove();
+    $( "#chat_window_2" ).remove();
 });
 });
 ///////////////////////////////////////////////////////////////////////////////////////////

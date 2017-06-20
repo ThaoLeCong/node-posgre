@@ -93,6 +93,7 @@ const User = db.define('account', {
 ////////////////////////////////////
 
 var arrUser=[];
+var arrSocketID=[];
 var arrPhong=[];
 server.listen(process.env.PORT||3000,function(){
   console.log("server was started at port 3000");
@@ -105,30 +106,34 @@ io.on("connection",function(socket){
   });
   socket.on("_client_send_userName",function(data){
     if(arrUser.indexOf(data)>=0){
-      io.sockets.emit("_server_send_updateChatList",arrUser);
+      io.sockets.emit("_server_send_updateChatList",{arrUser:arrUser,arrSocketID:arrSocketID});
     }
     else {
       arrUser.push(data);
+      arrSocketID.push(socket.id);
       socket.UserName=data;
-      socket.emit("_server_send_loginSucess",socket.UserName);
+      socket.emit("_server_send_loginSucess",data);
       console.log(socket.UserName+" da dang ky thanh cong");
-      io.sockets.emit("_server_send_updateChatList",arrUser);
+      io.sockets.emit("_server_send_updateChatList",{arrUser:arrUser,arrSocketID:arrSocketID});
     }
   });
   socket.on("client_send_userLogout",function(){
     console.log(socket.UserName+" da logout");
     arrUser.splice(arrUser.indexOf(socket.UserName),1);
-    socket.broadcast.emit("_server_send_updateChatList",arrUser);
+    socket.broadcast.emit("_server_send_updateChatList",{arrUser:arrUser,arrSocketID:arrSocketID});
   });
   socket.on("client_send_message",function(data){
     console.log(data);
 	  socket.broadcast.emit("server_send_updateMessage",{nguoigui:socket.UserName,noidung:data});  
   });
-  socket.on("client_send_userType",function(){
-    socket.broadcast.emit("server_send_someoneType",socket.UserName);
+  socket.on("client_send_private_message",function(data){
+     socket.broadcast.to(data.id).emit('server_send_your_private_message', {id:socket.id,UserName:socket.UserName,message:data.message});
   });
-  socket.on("client_send_stopType",function(){
-	socket.broadcast.emit("server_send_stopType");
+  socket.on("client_send_userType",function(data){
+    socket.broadcast.to(data).emit("server_send_someoneType",{id:socket.id,UserName:socket.UserName});
+  });
+  socket.on("client_send_stopType",function(data){
+	   socket.broadcast.to(data).emit("server_send_stopType",socket.id);
   });
   
   //groupchat
